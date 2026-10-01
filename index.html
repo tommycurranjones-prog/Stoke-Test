@@ -3,13 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Stoke Test</title>
+    <title>The Stoke Test | Quiz</title>
+    
+    <!-- Open Graph Tags for Social Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="The Stoke Test Quiz">
+    <meta property="og:description" content="Can you guess who actually did it on a cold rainy night in Stoke?">
+    
     <style>
         :root {
             --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.85);
             --text-color: #f8fafc;
             --accent-red: #e11d48;
             --accent-green: #10b981;
+            --accent-blue: #2563eb;
         }
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -25,51 +33,74 @@
         canvas {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%; z-index: 1; pointer-events: none;
-            opacity: 0.6;
+            opacity: 0.5;
         }
         .container {
             z-index: 10;
             text-align: center;
-            background: rgba(15, 23, 42, 0.85);
-            padding: 3rem; border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
+            background: var(--card-bg);
+            padding: 2.5rem; border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255,255,255,0.1);
-            max-width: 500px; width: 90%;
+            max-width: 480px; width: 90%;
         }
-        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 2px;}
-        p.subtitle { color: #94a3b8; margin-bottom: 2rem; }
-        .search-box {
-            display: flex; gap: 10px; margin-bottom: 2rem;
-        }
-        input {
-            flex: 1; padding: 12px 16px;
-            border-radius: 8px; border: none;
-            background: #1e293b; color: white;
-            font-size: 1rem; outline: none;
-            border: 1px solid transparent;
-            transition: border 0.3s;
-        }
-        input:focus { border: 1px solid var(--accent-red); }
-        button {
-            padding: 12px 24px; border-radius: 8px;
-            border: none; background: var(--accent-red);
-            color: white; font-weight: bold; font-size: 1rem;
-            cursor: pointer; transition: transform 0.1s, background 0.3s;
-        }
-        button:active { transform: scale(0.95); }
-        button:hover { background: #be123c; }
+        h1 { font-size: 2.2rem; margin: 0 0 0.3rem 0; text-transform: uppercase; letter-spacing: 2px; }
+        .criteria { color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem; font-weight: 600; }
         
-        #result-box {
-            display: none; padding: 1.5rem;
-            border-radius: 8px; margin-top: 1rem;
-            animation: fadeIn 0.5s ease;
+        .score-board {
+            display: flex; justify-content: space-around;
+            background: rgba(15, 23, 42, 0.6); padding: 10px;
+            border-radius: 8px; margin-bottom: 1.5rem;
+            font-weight: bold; font-size: 0.95rem;
         }
-        .success { background: rgba(16, 185, 129, 0.2); border: 1px solid var(--accent-green); }
-        .failure { background: rgba(225, 29, 72, 0.2); border: 1px solid var(--accent-red); }
-        .stat { color: #cbd5e1; font-size: 0.9rem; margin-top: 8px; }
+        .score-val { color: var(--accent-green); }
+        .streak-val { color: #f59e0b; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .player-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem; border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        .player-label { text-transform: uppercase; font-size: 0.75rem; color: #94a3b8; letter-spacing: 1px; }
+        .player-name { font-size: 1.8rem; font-weight: 800; margin: 8px 0; color: #ffffff; }
+
+        .btn-group {
+            display: flex; gap: 12px; justify-content: center;
+        }
+        .choice-btn {
+            flex: 1; padding: 14px 10px; border-radius: 10px;
+            border: none; font-weight: 800; font-size: 1rem;
+            cursor: pointer; transition: transform 0.1s, background 0.2s;
+            color: white; text-transform: uppercase;
+        }
+        .choice-btn:active { transform: scale(0.96); }
+        .btn-yes { background: var(--accent-green); }
+        .btn-yes:hover { background: #059669; }
+        .btn-no { background: var(--accent-red); }
+        .btn-no:hover { background: #be123c; }
+
+        #result-box {
+            display: none; padding: 1.2rem;
+            border-radius: 10px; margin-top: 1.2rem;
+            animation: fadeIn 0.4s ease;
+            text-align: left;
+        }
+        .verdict-header { font-size: 1.3rem; font-weight: bold; margin-bottom: 6px; text-align: center; }
+        .verdict-correct { color: var(--accent-green); }
+        .verdict-wrong { color: var(--accent-red); }
+
+        .stat-line { font-size: 0.88rem; color: #cbd5e1; margin-top: 4px; }
+        
+        .action-btn {
+            width: 100%; margin-top: 12px; padding: 10px;
+            background: var(--accent-blue); border: none; border-radius: 8px;
+            color: white; font-weight: bold; cursor: pointer; font-size: 0.95rem;
+        }
+        .action-btn:hover { background: #1d4ed8; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -78,60 +109,129 @@
 
     <div class="container">
         <h1>The Stoke Test</h1>
-        <p class="subtitle">> 5PM | < 8°C | Raining | > 8.0 Rating</p>
-        
-        <div class="search-box">
-            <input type="text" id="playerInput" placeholder="Enter footballer name (e.g. Lionel Messi)" autocomplete="off">
-            <button onclick="checkPlayer()">Test</button>
+        <div class="criteria">> 5PM | < 8°C | Raining | > 8.0 Rating</div>
+
+        <div class="score-board">
+            <div>Score: <span id="score" class="score-val">0</span></div>
+            <div>Streak: <span id="streak" class="streak-val">0</span> 🔥</div>
+        </div>
+
+        <div class="player-card">
+            <div class="player-label">Could he do it on a cold rainy night in Stoke?</div>
+            <div class="player-name" id="playerName">Loading player...</div>
+        </div>
+
+        <div class="btn-group" id="btnGroup">
+            <button class="choice-btn btn-yes" onclick="makeGuess(true)">🟢 YES</button>
+            <button class="choice-btn btn-no" onclick="makeGuess(false)">🔴 NO</button>
         </div>
 
         <div id="result-box"></div>
     </div>
 
     <script>
+        // Preset list of notable players to test against
+        const playerPool = [
+            "Lionel Messi", "Cristiano Ronaldo", "Robin van Persie", "Eden Hazard",
+            "Sergio Agüero", "Alexis Sánchez", "Mesut Özil", "Wayne Rooney",
+            "Didier Drogba", "Kevin De Bruyne", "Mohamed Salah", "Thierry Henry",
+            "Frank Lampard", "Steven Gerrard", "Harry Kane", "Gareth Bale",
+            "Diego Costa", "Cesc Fàbregas", "David Silva", "Luis Suárez",
+            "Carlos Tevez", "Fernando Torres", "Romelu Lukaku", "Riyad Mahrez"
+        ];
+
         let stokeDatabase = {};
+        let currentChoiceIndex = 0;
+        let score = 0;
+        let streak = 0;
+        let playedIndices = [];
 
-        // Load the JSON data generated by the Python script
+        // Fetch database generated by Python script
         fetch('stoke_data.json')
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                stokeDatabase = data.stoked_players;
-                console.log("Database loaded!", data);
+                stokeDatabase = data.stoked_players || {};
+                loadNextPlayer();
             })
-            .catch(err => console.error("Could not load database. Make sure stoke_data.json exists.", err));
+            .catch(err => {
+                console.error("Database not found, using empty set.", err);
+                loadNextPlayer();
+            });
 
-        function checkPlayer() {
-            const input = document.getElementById('playerInput').value.trim().toLowerCase();
-            const resultBox = document.getElementById('result-box');
-            if(!input) return;
+        function loadNextPlayer() {
+            document.getElementById('result-box').style.display = 'none';
+            document.getElementById('btnGroup').style.display = 'flex';
 
-            resultBox.style.display = 'block';
-            resultBox.className = ''; 
-
-            if(stokeDatabase[input]) {
-                const p = stokeDatabase[input];
-                resultBox.classList.add('success');
-                resultBox.innerHTML = `
-                    <h2 style="color: #10b981; margin:0 0 10px 0;">YES! HE DID IT.</h2>
-                    <p style="margin:0;"><strong>${p.name}</strong> conquered the cold rainy night.</p>
-                    <div class="stat">Date: ${p.match_date}</div>
-                    <div class="stat">Team: ${p.team}</div>
-                    <div class="stat">Temp: ${p.temp}°C | Sofascore: ${p.rating}/10</div>
-                `;
-            } else {
-                resultBox.classList.add('failure');
-                resultBox.innerHTML = `
-                    <h2 style="color: #e11d48; margin:0 0 10px 0;">NOPE.</h2>
-                    <p style="margin:0;">No record of this player passing the Stoke Test.</p>
-                    <div class="stat">They either never played, played in good weather, or couldn't hack it.</div>
-                `;
+            if (playedIndices.length >= playerPool.length) {
+                playedIndices = []; // Reset pool loop
             }
+
+            let randIndex;
+            do {
+                randIndex = Math.floor(Math.random() * playerPool.length);
+            } while (playedIndices.includes(randIndex));
+
+            playedIndices.push(randIndex);
+            currentChoiceIndex = randIndex;
+
+            document.getElementById('playerName').innerText = playerPool[currentChoiceIndex];
         }
 
-        // Allow pressing 'Enter' to search
-        document.getElementById('playerInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') checkPlayer();
-        });
+        function makeGuess(userGuessedYes) {
+            const playerRaw = playerPool[currentChoiceIndex];
+            const playerKey = playerRaw.toLowerCase();
+            const didStoke = stokeDatabase.hasOwnProperty(playerKey);
+            const resultBox = document.getElementById('result-box');
+            
+            document.getElementById('btnGroup').style.display = 'none';
+            resultBox.style.display = 'block';
+
+            const isCorrect = (userGuessedYes === didStoke);
+
+            if (isCorrect) {
+                score++;
+                streak++;
+                document.getElementById('score').innerText = score;
+                document.getElementById('streak').innerText = streak;
+            } else {
+                streak = 0;
+                document.getElementById('streak').innerText = streak;
+            }
+
+            let html = `<div class="verdict-header ${isCorrect ? 'verdict-correct' : 'verdict-wrong'}">`;
+            html += isCorrect ? "🎉 CORRECT!" : "❌ WRONG!";
+            html += `</div>`;
+
+            if (didStoke) {
+                const info = stokeDatabase[playerKey];
+                html += `<p style="margin:5px 0 10px 0;"><strong>${info.name}</strong> PASSED the Stoke Test!</p>`;
+                html += `<div class="stat-line">📅 Date: ${info.match_date}</div>`;
+                html += `<div class="stat-line">🛡️ Opponent: ${info.team}</div>`;
+                html += `<div class="stat-line">🌧️ Weather: ${info.temp}°C (Raining)</div>`;
+                html += `<div class="stat-line">⭐ Rating: ${info.rating}/10</div>`;
+            } else {
+                html += `<p style="margin:5px 0 10px 0;"><strong>${playerRaw}</strong> NEVER passed the Stoke Test.</p>`;
+                html += `<div class="stat-line">They either never played at Stoke in an evening match, the weather was too mild, or they failed to score an 8.0+ rating.</div>`;
+            }
+
+            html += `<button class="action-btn" onclick="loadNextPlayer()">Next Footballer ➔</button>`;
+            html += `<button class="action-btn" style="background:#475569;" onclick="shareScore()">Share Result 🚀</button>`;
+
+            resultBox.className = isCorrect ? 'verdict-correct' : 'verdict-wrong';
+            resultBox.style.border = `1px solid ${isCorrect ? 'var(--accent-green)' : 'var(--accent-red)'}`;
+            resultBox.style.background = isCorrect ? 'rgba(16, 185, 129, 0.15)' : 'rgba(225, 29, 72, 0.15)';
+            resultBox.innerHTML = html;
+        }
+
+        function shareScore() {
+            const text = `I'm on a ${streak} streak testing footballers on a cold rainy night in Stoke! Can you beat my score?`;
+            if (navigator.share) {
+                navigator.share({ title: 'The Stoke Test', text: text, url: window.location.href });
+            } else {
+                navigator.clipboard.writeText(`${text} ${window.location.href}`);
+                alert("Score copied to clipboard!");
+            }
+        }
 
         // Background Rain Animation
         const canvas = document.getElementById('rainCanvas');
@@ -140,10 +240,10 @@
         let height = canvas.height = window.innerHeight;
         let drops = [];
 
-        for (let i = 0; i < 400; i++) {
+        for (let i = 0; i < 350; i++) {
             drops.push({
                 x: Math.random() * width, y: Math.random() * height,
-                l: Math.random() * 20 + 10, v: Math.random() * 15 + 10
+                l: Math.random() * 20 + 10, v: Math.random() * 14 + 8
             });
         }
 
@@ -156,11 +256,8 @@
                 let d = drops[i];
                 ctx.moveTo(d.x, d.y);
                 ctx.lineTo(d.x + d.l * 0.1, d.y + d.l);
-                d.y += d.v;
-                d.x += d.v * 0.1; 
-                if (d.y > height) {
-                    d.y = -20; d.x = Math.random() * width;
-                }
+                d.y += d.v; d.x += d.v * 0.1;
+                if (d.y > height) { d.y = -20; d.x = Math.random() * width; }
             }
             ctx.stroke();
             requestAnimationFrame(drawRain);
